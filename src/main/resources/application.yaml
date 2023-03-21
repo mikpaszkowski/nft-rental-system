@@ -1,0 +1,11 @@
+spring:
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+
+server:
+  servlet:
+    context-path: "/api"
+xrpl:
+  url: "https://s.devnet.rippletest.net:51234/"
+
