@@ -1,4 +1,4 @@
-package com.example.demo.xrpl.rentals.domain;
+package com.example.demo.xrpl.nft.domain.service;
 
 import org.springframework.stereotype.Service;
 

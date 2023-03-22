@@ -1,4 +1,4 @@
-package com.example.demo.xrpl.account.domain;
+package com.example.demo.xrpl.account.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -6,7 +6,6 @@ import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
 import org.xrpl.xrpl4j.client.XrplClient;
 import org.xrpl.xrpl4j.model.client.accounts.AccountInfoRequestParams;
 import org.xrpl.xrpl4j.model.client.accounts.AccountInfoResult;
-import org.xrpl.xrpl4j.model.client.accounts.AccountNftsResult;
 import org.xrpl.xrpl4j.model.transactions.Address;
 
 @Service
@@ -17,9 +16,5 @@ public class AccountService {
 
     public AccountInfoResult getAccountInfo(Address address) throws JsonRpcClientErrorException {
         return xrplClient.accountInfo(AccountInfoRequestParams.of(address));
-    }
-
-    public AccountNftsResult accountNftsResult(Address address) throws JsonRpcClientErrorException {
-        return xrplClient.accountNfts(address);
     }
 }

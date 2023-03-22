@@ -1,4 +1,4 @@
-package com.example.demo.xrpl.account.api.dto;
+package com.example.demo.xrpl.nft.api.model;
 
 import lombok.Data;
 
