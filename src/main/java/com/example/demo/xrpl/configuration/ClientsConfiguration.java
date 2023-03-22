@@ -18,13 +18,13 @@ class ClientsConfiguration {
 
     @Bean
     public XrplClient xrplClient() {
-        var client = new XrplClient(HttpUrl.get(configurationProperties.getUrl()));
-        log.info("XRP ledger network address: {}", configurationProperties.getUrl());
+        var client = new XrplClient(HttpUrl.get(configurationProperties.getClientUrl()));
+        log.info("XRP ledger network address: {}", configurationProperties.getClientUrl());
         return client;
     }
 
     @Bean
     public FaucetClient faucetClient() {
-        return FaucetClient.construct(HttpUrl.get("https://faucet.devnet.rippletest.net"));
+        return FaucetClient.construct(HttpUrl.get(configurationProperties.getFaucetUrl()));
     }
 }

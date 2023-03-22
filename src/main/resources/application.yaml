@@ -7,5 +7,7 @@ server:
   servlet:
     context-path: "/api"
 xrpl:
-  url: "https://s.devnet.rippletest.net:51234/"
+  addresses:
+    clientUrl: "https://s.devnet.rippletest.net:51234/"
+    faucetUrl: "https://faucet.devnet.rippletest.net"
 

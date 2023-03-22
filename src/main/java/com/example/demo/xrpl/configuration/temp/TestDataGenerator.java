@@ -3,7 +3,6 @@ package com.example.demo.xrpl.configuration.temp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.primitives.UnsignedLong;
 import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
@@ -25,13 +24,18 @@ import org.xrpl.xrpl4j.model.transactions.XrpCurrencyAmount;
 
 @Slf4j
 @Component
-@AllArgsConstructor
 public class TestDataGenerator {
 
     private final FaucetClient faucetClient;
     private final XrplClient xrplClient;
 
-    protected final SignatureService<PrivateKey> signatureService = new BcSignatureService();
+    protected final SignatureService<PrivateKey> signatureService;
+
+    public TestDataGenerator(FaucetClient faucetClient, XrplClient xrplClient) {
+        this.faucetClient = faucetClient;
+        this.xrplClient = xrplClient;
+        this.signatureService = new BcSignatureService();
+    }
 
     @PostConstruct
     public void prepareTestAccounts() throws JsonRpcClientErrorException, JsonProcessingException {
@@ -40,10 +44,12 @@ public class TestDataGenerator {
         var response = faucetClient.fundAccount(FundAccountRequest.of(keyPair.publicKey().deriveAddress()));
         log.info("Test account funded: {}", response.account());
 
+        mintSampleNfToken(keyPair, NfTokenUri.ofPlainText("ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi"));
+        mintSampleNfToken(keyPair, NfTokenUri.ofPlainText("ipfs://kfoqeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi"));
+    }
+
+    private void mintSampleNfToken(KeyPair keyPair, NfTokenUri uri) throws JsonRpcClientErrorException, JsonProcessingException {
         AccountInfoResult accountInfoResult = xrplClient.accountInfo(AccountInfoRequestParams.of(keyPair.publicKey().deriveAddress()));
-
-        NfTokenUri uri = NfTokenUri.ofPlainText("ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi");
-
         NfTokenMint nfTokenMint = NfTokenMint.builder()
                 .account(keyPair.publicKey().deriveAddress())
                 .tokenTaxon(UnsignedLong.ONE)

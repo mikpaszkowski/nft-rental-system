@@ -4,7 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "xrpl")
+@ConfigurationProperties(prefix = "xrpl.addresses")
 public class XrplConfigurationProperties {
-    private String url;
+    private String clientUrl;
+    private String faucetUrl;
 }
