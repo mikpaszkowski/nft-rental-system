@@ -23,6 +23,8 @@ dependencies {
 	implementation 'org.xrpl:xrpl4j-core:3.0.1'
 	implementation 'org.xrpl:xrpl4j-client:3.0.1'
 	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+	implementation 'org.postgresql:postgresql:42.6.0'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.5'
 
 	compileOnly 'org.immutables:value:2.9.3'
 	compileOnly 'org.projectlombok:lombok'

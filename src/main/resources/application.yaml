@@ -8,6 +8,7 @@ server:
     context-path: "/api"
 xrpl:
   addresses:
-    clientUrl: "https://s.devnet.rippletest.net:51234/"
-    faucetUrl: "https://faucet.devnet.rippletest.net"
+    clientUrl: "https://hooks-testnet-v2.xrpl-labs.com/"
+    faucetUrl: "https://hooks-testnet-v2.xrpl-labs.com"
+
 
