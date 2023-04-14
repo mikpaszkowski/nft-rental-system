@@ -2,6 +2,10 @@ spring:
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
 
 server:
   servlet:
