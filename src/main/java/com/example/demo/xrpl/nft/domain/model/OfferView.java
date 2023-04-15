@@ -24,6 +24,6 @@ public class OfferView {
     @NotNull
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", foreignKey = @ForeignKey(name = "NFT_ID_FK"))
     private NFTView nftView;
 }

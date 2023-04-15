@@ -2,7 +2,10 @@ package com.example.demo.xrpl.nft.api;
 
 import com.example.demo.xrpl.nft.api.model.NFTokenDto;
 import com.example.demo.xrpl.nft.api.model.mapper.NftMapper;
-import com.example.demo.xrpl.nft.domain.model.*;
+import com.example.demo.xrpl.nft.domain.model.OfferType;
+import com.example.demo.xrpl.nft.domain.model.OfferView;
+import com.example.demo.xrpl.nft.domain.model.RentalType;
+import com.example.demo.xrpl.nft.domain.model.RentalView;
 import com.example.demo.xrpl.nft.domain.repository.OfferRepository;
 import com.example.demo.xrpl.nft.domain.repository.RentalRepository;
 import com.example.demo.xrpl.nft.domain.service.NftDetailsService;
@@ -16,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
 import org.xrpl.xrpl4j.model.transactions.Address;
-import org.xrpl.xrpl4j.model.transactions.NfTokenId;
 
 import java.util.List;
 
@@ -30,12 +32,12 @@ class NftInfoRestController {
     private final RentalRepository rentalRepository;
     private final OfferRepository offerRepository;
 
-    private final NftMapper accountMapper;
+    private final NftMapper nftMapper;
 
     @GetMapping
     ResponseEntity<List<NFTokenDto>> findAll(@RequestParam String address) throws JsonRpcClientErrorException {
         var nfTokensObjects = nftDetailsService.getAll(Address.of(address)).accountNfts();
-        return ResponseEntity.ok(accountMapper.toDtoList(nfTokensObjects));
+        return ResponseEntity.ok(nftMapper.toDtoList(nfTokensObjects));
     }
 
     @GetMapping("/rentals")

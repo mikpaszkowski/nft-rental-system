@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -37,7 +38,11 @@ public class RentalView {
     private RentalStatus rentalStatus;
     private Integer collateral;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "nft_id")
+    @JoinColumn(name = "nft_id", foreignKey = @ForeignKey(name = "NFT_ID_FK"))
     @NotNull
     private NFTView nftView;
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date", updatable = false)
+    private LocalDateTime createDate;
 }
