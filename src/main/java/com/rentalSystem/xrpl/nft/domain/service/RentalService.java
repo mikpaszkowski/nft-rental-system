@@ -1,28 +1,65 @@
 package com.rentalSystem.xrpl.nft.domain.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.primitives.UnsignedInteger;
+import com.rentalSystem.xrpl.nft.api.model.RentInputDTO;
+import com.rentalSystem.xrpl.nft.domain.repository.OfferRepository;
+import com.rentalSystem.xrpl.wallet.fake.domain.service.WalletService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
+import org.xrpl.xrpl4j.client.XrplClient;
+import org.xrpl.xrpl4j.crypto.keys.PublicKey;
+import org.xrpl.xrpl4j.model.client.accounts.AccountInfoRequestParams;
+import org.xrpl.xrpl4j.model.client.accounts.AccountInfoResult;
+import org.xrpl.xrpl4j.model.client.common.LedgerSpecifier;
+import org.xrpl.xrpl4j.model.transactions.Address;
+import org.xrpl.xrpl4j.model.transactions.NfTokenCreateOffer;
+import org.xrpl.xrpl4j.model.transactions.NfTokenId;
+import org.xrpl.xrpl4j.model.transactions.XrpCurrencyAmount;
 
 @Service
-class RentalService {
+@RequiredArgsConstructor
+@Slf4j
+public class RentalService {
 
-    public boolean proposeNFTRental(String address) {
+    private final OfferRepository offerRepository;
 
-        return true;
+    private final XrplClient xrplClient;
+
+    private final WalletService walletService;
+
+    private final static XrpCurrencyAmount RENTAL_TEMP_AMOUNT = XrpCurrencyAmount.ofDrops(1);
+
+    public boolean rentNft(RentInputDTO rentInputDTO) throws JsonRpcClientErrorException, JsonProcessingException {
+        var offer = offerRepository.findById(rentInputDTO.getOfferId());
+        var accountInfo = getValidatedAccountInfo(Address.of(rentInputDTO.getRenterId()));
+        var fee = xrplClient.fee();
+        NfTokenCreateOffer createOffer = NfTokenCreateOffer.builder()
+                .account(Address.of(rentInputDTO.getRenterId()))
+                .nfTokenId(NfTokenId.of(offer.get().getNftView().getNfTokenID()))
+                .sequence(accountInfo.accountData().sequence().plus(UnsignedInteger.ONE))
+                .signingPublicKey(PublicKey.builder().build()) // TODO replace with fake Wallet data -> finally with XUMM
+                .fee(fee.drops().baseFee())
+                .amount(RENTAL_TEMP_AMOUNT)
+                .build();
+        var submitResult = walletService.submitTransaction(createOffer);
+        log.info("NfTokenCreateOffer transaction was applied: {}", submitResult.applied());
+        log.info("Explorer: https://hooks-testnet-v2-explorer.xrpl-labs.com/{}", submitResult.transactionResult().hash());
+        return submitResult.applied();
     }
 
-    // possible proxy pattern for checking if renter did not corrupted the NFT
-    // if that is the case, then XRPs locked in the Escrow should be transferred to the NFT issuer?
-    // we need somehow prevent the renter from corrupting the amount of XRP located in Escrows
-
-
-    public boolean getRentings() {
-
-        return true;
-    }
-
-    public boolean getLendings() {
-        // the way it would be handled is similar to the retrieval of lendings
-        return true;
+    private AccountInfoResult getValidatedAccountInfo(Address classicAddress) {
+        try {
+            AccountInfoRequestParams params = AccountInfoRequestParams.builder()
+                    .account(classicAddress)
+                    .ledgerSpecifier(LedgerSpecifier.VALIDATED)
+                    .build();
+            return xrplClient.accountInfo(params);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
 }

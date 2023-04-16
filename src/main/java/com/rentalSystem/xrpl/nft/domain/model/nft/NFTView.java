@@ -1,12 +1,13 @@
-package com.rentalSystem.xrpl.nft.domain.model;
+package com.rentalSystem.xrpl.nft.domain.model.nft;
 
+import com.rentalSystem.xrpl.nft.domain.model.offer.OfferView;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,8 +19,7 @@ import lombok.NoArgsConstructor;
 public class NFTView {
 
     @Id
-    @Generated
-    private Long nfTokenID;
+    private String nfTokenID;
     @NotNull
     @NotBlank
     private String issuerId;
@@ -31,4 +31,6 @@ public class NFTView {
     private String uri;
     @NotNull
     private NFTStatus nftStatus;
+    @OneToOne(mappedBy = "nftView")
+    private OfferView offerView;
 }

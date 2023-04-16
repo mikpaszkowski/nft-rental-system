@@ -1,6 +1,7 @@
-package com.rentalSystem.xrpl.nft.domain.model;
+package com.rentalSystem.xrpl.nft.domain.model.offer;
 
 
+import com.rentalSystem.xrpl.nft.domain.model.nft.NFTView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -22,8 +23,7 @@ public class OfferView {
     @NotNull
     private OfferType offerType;
     @NotNull
-    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", foreignKey = @ForeignKey(name = "NFT_ID_FK"))
+    @JoinColumn(name = "nft_id", referencedColumnName = "nfTokenID", foreignKey = @ForeignKey(name = "NFT_ID_FK"))
     private NFTView nftView;
 }

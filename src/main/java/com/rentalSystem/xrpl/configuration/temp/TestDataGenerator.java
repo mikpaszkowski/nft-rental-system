@@ -2,16 +2,17 @@ package com.rentalSystem.xrpl.configuration.temp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.primitives.UnsignedLong;
+import com.rentalSystem.xrpl.wallet.fake.domain.repository.WalletRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
 import org.xrpl.xrpl4j.client.XrplClient;
 import org.xrpl.xrpl4j.client.faucet.FaucetClient;
-import org.xrpl.xrpl4j.client.faucet.FundAccountRequest;
+import org.xrpl.xrpl4j.codec.addresses.UnsignedByteArray;
 import org.xrpl.xrpl4j.crypto.keys.KeyPair;
 import org.xrpl.xrpl4j.crypto.keys.PrivateKey;
-import org.xrpl.xrpl4j.crypto.keys.Seed;
+import org.xrpl.xrpl4j.crypto.keys.PublicKey;
 import org.xrpl.xrpl4j.crypto.signing.SignatureService;
 import org.xrpl.xrpl4j.crypto.signing.SingleSignedTransaction;
 import org.xrpl.xrpl4j.crypto.signing.bc.BcSignatureService;
@@ -31,21 +32,29 @@ public class TestDataGenerator {
 
     protected final SignatureService<PrivateKey> signatureService;
 
-    public TestDataGenerator(FaucetClient faucetClient, XrplClient xrplClient) {
+    private final WalletRepository walletRepository;
+
+    public TestDataGenerator(FaucetClient faucetClient, XrplClient xrplClient, WalletRepository walletRepository) {
         this.faucetClient = faucetClient;
         this.xrplClient = xrplClient;
+        this.walletRepository = walletRepository;
         this.signatureService = new BcSignatureService();
     }
 
     @PostConstruct
-    public void prepareTestAccounts() throws JsonRpcClientErrorException, JsonProcessingException {
-        final KeyPair keyPair = Seed.secp256k1Seed().deriveKeyPair();
-        log.info("Generated test wallet with classic-address: {}", keyPair.publicKey().deriveAddress());
-        var response = faucetClient.fundAccount(FundAccountRequest.of(keyPair.publicKey().deriveAddress()));
-        log.info("Test account funded: {}", response.account());
-
-        mintSampleNfToken(keyPair, NfTokenUri.ofPlainText("ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi"));
-        mintSampleNfToken(keyPair, NfTokenUri.ofPlainText("ipfs://kfoqeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi"));
+    public void prepareTestAccounts() {
+        var wallets = walletRepository.findAll();
+        wallets.stream().forEach((walletView -> {
+            var keyPair = KeyPair.builder()
+                    .publicKey(PublicKey.fromBase58EncodedPublicKey(walletView.getPublicKey()))
+                    .privateKey(PrivateKey.of(UnsignedByteArray.fromHex(walletView.getPrivateKeyHex())))
+                    .build();
+            try {
+                mintSampleNfToken(keyPair, NfTokenUri.ofPlainText("ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi"));
+            } catch (JsonRpcClientErrorException | JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }));
     }
 
     private void mintSampleNfToken(KeyPair keyPair, NfTokenUri uri) throws JsonRpcClientErrorException, JsonProcessingException {
@@ -62,6 +71,5 @@ public class TestDataGenerator {
         SingleSignedTransaction<NfTokenMint> signedTransaction = signatureService.sign(keyPair.privateKey(), nfTokenMint);
         SubmitResult<NfTokenMint> submitResult = xrplClient.submit(signedTransaction);
         log.info("Account {} minted NFToken of taxon: {}", keyPair.publicKey().deriveAddress(), submitResult.transactionResult().transaction().uri().orElseThrow());
-
     }
 }

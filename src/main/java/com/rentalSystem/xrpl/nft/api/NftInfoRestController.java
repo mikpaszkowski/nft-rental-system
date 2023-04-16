@@ -1,44 +1,31 @@
 package com.rentalSystem.xrpl.nft.api;
 
-import com.rentalSystem.xrpl.nft.api.model.NFTokenDto;
-import com.rentalSystem.xrpl.nft.api.model.mapper.NftMapper;
-import com.rentalSystem.xrpl.nft.domain.model.OfferType;
-import com.rentalSystem.xrpl.nft.domain.model.OfferView;
-import com.rentalSystem.xrpl.nft.domain.model.RentalType;
-import com.rentalSystem.xrpl.nft.domain.model.RentalView;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.rentalSystem.xrpl.nft.api.model.RentInputDTO;
+import com.rentalSystem.xrpl.nft.domain.model.offer.OfferType;
+import com.rentalSystem.xrpl.nft.domain.model.offer.OfferView;
+import com.rentalSystem.xrpl.nft.domain.model.rental.RentalType;
+import com.rentalSystem.xrpl.nft.domain.model.rental.RentalView;
 import com.rentalSystem.xrpl.nft.domain.repository.OfferRepository;
 import com.rentalSystem.xrpl.nft.domain.repository.RentalRepository;
-import com.rentalSystem.xrpl.nft.domain.service.NftDetailsService;
+import com.rentalSystem.xrpl.nft.domain.service.RentalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
-import org.xrpl.xrpl4j.model.transactions.Address;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("nft")
 @RequiredArgsConstructor
 class NftInfoRestController {
 
-    private final NftDetailsService nftDetailsService;
-
     private final RentalRepository rentalRepository;
     private final OfferRepository offerRepository;
 
-    private final NftMapper nftMapper;
+    private final RentalService rentalService;
 
-    @GetMapping
-    ResponseEntity<List<NFTokenDto>> findAll(@RequestParam String address) throws JsonRpcClientErrorException {
-        var nfTokensObjects = nftDetailsService.getAll(Address.of(address)).accountNfts();
-        return ResponseEntity.ok(nftMapper.toDtoList(nfTokensObjects));
-    }
 
     @GetMapping("/rentals")
     ResponseEntity<Page<RentalView>> findRentalsByType(@RequestParam RentalType rentalType, Pageable pageable) {
@@ -48,5 +35,14 @@ class NftInfoRestController {
     @GetMapping("/offers")
     ResponseEntity<Page<OfferView>> findOffersByType(@RequestParam OfferType offerType, Pageable pageable) {
         return ResponseEntity.ok(offerRepository.findAllByOfferType(offerType, pageable));
+    }
+
+    @PostMapping("/rent")
+    void rentNFT(@RequestBody RentInputDTO inputDTO) {
+        try {
+            rentalService.rentNft(inputDTO);
+        } catch (JsonRpcClientErrorException | JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

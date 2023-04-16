@@ -1,6 +1,7 @@
-package com.rentalSystem.xrpl.nft.domain.model;
+package com.rentalSystem.xrpl.nft.domain.model.rental;
 
 
+import com.rentalSystem.xrpl.nft.domain.model.nft.NFTView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -42,7 +43,6 @@ public class RentalView {
     @NotNull
     private NFTView nftView;
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date", updatable = false)
     private LocalDateTime createDate;
 }
