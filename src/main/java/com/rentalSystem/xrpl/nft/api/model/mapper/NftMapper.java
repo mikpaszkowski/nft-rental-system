@@ -1,5 +1,6 @@
 package com.rentalSystem.xrpl.nft.api.model.mapper;
 
+import com.rentalSystem.xrpl.configuration.model.BaseMapperConfig;
 import com.rentalSystem.xrpl.nft.api.model.NFTokenDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -7,7 +8,7 @@ import org.xrpl.xrpl4j.model.client.accounts.NfTokenObject;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(config = BaseMapperConfig.class)
 public interface NftMapper {
 
     List<NFTokenDto> toDtoList(List<NfTokenObject> nfTokenObjects);

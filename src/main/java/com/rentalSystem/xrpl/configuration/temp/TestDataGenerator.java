@@ -2,13 +2,14 @@ package com.rentalSystem.xrpl.configuration.temp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.primitives.UnsignedLong;
+import com.rentalSystem.xrpl.wallet.fake.config.FakeWalletGenerator;
 import com.rentalSystem.xrpl.wallet.fake.domain.repository.WalletRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
 import org.xrpl.xrpl4j.client.XrplClient;
-import org.xrpl.xrpl4j.client.faucet.FaucetClient;
 import org.xrpl.xrpl4j.codec.addresses.UnsignedByteArray;
 import org.xrpl.xrpl4j.crypto.keys.KeyPair;
 import org.xrpl.xrpl4j.crypto.keys.PrivateKey;
@@ -25,24 +26,27 @@ import org.xrpl.xrpl4j.model.transactions.XrpCurrencyAmount;
 
 @Slf4j
 @Component
+@DependsOn("fakeWalletGenerator")
 public class TestDataGenerator {
 
-    private final FaucetClient faucetClient;
     private final XrplClient xrplClient;
 
     protected final SignatureService<PrivateKey> signatureService;
 
     private final WalletRepository walletRepository;
 
-    public TestDataGenerator(FaucetClient faucetClient, XrplClient xrplClient, WalletRepository walletRepository) {
-        this.faucetClient = faucetClient;
+//    private final FakeWalletGenerator fakeWalletGenerator;
+
+    public TestDataGenerator(XrplClient xrplClient, WalletRepository walletRepository) {
         this.xrplClient = xrplClient;
         this.walletRepository = walletRepository;
+//        this.fakeWalletGenerator = fakeWalletGenerator;
         this.signatureService = new BcSignatureService();
     }
 
     @PostConstruct
-    public void prepareTestAccounts() {
+    public void prepareTestAccounts() throws InterruptedException {
+//        fakeWalletGenerator.prepareTestWallets();
         var wallets = walletRepository.findAll();
         wallets.stream().forEach((walletView -> {
             var keyPair = KeyPair.builder()
