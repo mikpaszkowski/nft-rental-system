@@ -2,10 +2,17 @@ spring:
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
 
 server:
   servlet:
     context-path: "/api"
 xrpl:
-  url: "https://s.devnet.rippletest.net:51234/"
+  addresses:
+    clientUrl: "https://hooks-testnet-v2.xrpl-labs.com/"
+    faucetUrl: "https://hooks-testnet-v2.xrpl-labs.com"
+
 
