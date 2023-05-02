@@ -17,7 +17,7 @@ public abstract class OfferMapper {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Mapping(target = "nftView", expression = "java(getNft(offerRequestDTO.getNftId()))")
+    @Mapping(target = "nftView", expression = "java(getNFT(offerRequestDTO.getNftId()))")
     @Mapping(target = "id", expression = "java(offerView.getId())")
     @Mapping(target = "dailyRentalPrice", expression = "java(offerView.getDailyRentalPrice())")
     @Mapping(target = "maxRentalDurationDays", expression = "java(offerView.getMaxRentalDurationDays())")
@@ -26,7 +26,7 @@ public abstract class OfferMapper {
 
     public abstract OfferResponseDTO mapDTO(OfferView offerView);
 
-    protected NFTView getNft(String nfTokenId) {
+    protected NFTView getNFT(String nfTokenId) {
         return entityManager.getReference(NFTView.class, nfTokenId);
     }
 }

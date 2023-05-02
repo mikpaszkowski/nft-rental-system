@@ -11,7 +11,8 @@ import com.rentalSystem.xrpl.nft.domain.model.rental.RentalType;
 import com.rentalSystem.xrpl.nft.domain.model.rental.RentalView;
 import com.rentalSystem.xrpl.nft.domain.repository.OfferRepository;
 import com.rentalSystem.xrpl.nft.domain.repository.RentalRepository;
-import com.rentalSystem.xrpl.nft.domain.service.RentalService;
+import com.rentalSystem.xrpl.nft.domain.service.OfferFacade;
+import com.rentalSystem.xrpl.nft.domain.service.RentalFacade;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,8 @@ class NftInfoRestController {
     private final RentalRepository rentalRepository;
     private final OfferRepository offerRepository;
 
-    private final RentalService rentalService;
+    private final RentalFacade rentalFacade;
+    private final OfferFacade offerFacade;
 
 
     @GetMapping("/rentals")
@@ -42,19 +44,13 @@ class NftInfoRestController {
         return ResponseEntity.ok(offerRepository.findAllByOfferType(offerType, pageable));
     }
 
-    @PostMapping("/rentals")
-    ResponseEntity<RentResponseDTO> rentNFT(@NotNull @Valid @RequestBody RentRequestDTO inputDTO) {
-        try {
-            return ResponseEntity.ok(rentalService.rentNft(inputDTO));
-        } catch (JsonRpcClientErrorException | JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    @PostMapping("/offers")
+    ResponseEntity<OfferResponseDTO> createOffer(@NotNull @Valid @RequestBody OfferRequestDTO offerRequestDTO) throws JsonRpcClientErrorException {
+        return ResponseEntity.ok(offerFacade.createOffer(offerRequestDTO));
     }
 
-//    @PostMapping("/offers")
-//    ResponseEntity<OfferResponseDTO> createOffer(@NotNull @Valid @RequestBody OfferRequestDTO offerRequestDTO) {
-//        try {
-//
-//        }
-//    }
+    @PostMapping("/rentals")
+    ResponseEntity<RentResponseDTO> rentNFT(@NotNull @Valid @RequestBody RentRequestDTO rentRequestDTO) throws JsonRpcClientErrorException, JsonProcessingException {
+        return ResponseEntity.ok(rentalFacade.rentNft(rentRequestDTO));
+    }
 }

@@ -8,6 +8,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
+import java.time.LocalDateTime;
+
 @Jacksonized
 @Getter
 @Setter
@@ -16,6 +18,8 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 public class RentResponseDTO extends RentBaseDTO{
 
-    private Long rentalId;
+    private Long id;
     private RentalStatus rentalStatus;
+
+    private LocalDateTime rentalExpirationDateTime;
 }

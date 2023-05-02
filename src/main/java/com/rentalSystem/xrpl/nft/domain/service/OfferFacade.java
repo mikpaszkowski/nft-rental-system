@@ -5,24 +5,20 @@ import com.rentalSystem.xrpl.nft.api.model.OfferResponseDTO;
 import com.rentalSystem.xrpl.nft.domain.model.mapper.OfferMapper;
 import com.rentalSystem.xrpl.nft.domain.model.offer.OfferView;
 import com.rentalSystem.xrpl.nft.domain.repository.OfferRepository;
-import com.rentalSystem.xrpl.wallet.fake.domain.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
 import org.xrpl.xrpl4j.model.client.accounts.NfTokenObject;
 import org.xrpl.xrpl4j.model.transactions.Address;
-import org.xrpl.xrpl4j.model.transactions.NfTokenCreateOffer;
 
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class OfferService {
+public class OfferFacade {
 
     private final OfferRepository offerRepository;
     private final NftDetailsService nftDetailsService;
-
-    private final WalletService walletService;
 
     private final OfferMapper offerMapper;
 
