@@ -29,11 +29,12 @@ public class RentalFacade {
 
 
     public RentResponseDTO rentNft(RentRequestDTO rentRequestDTO) throws JsonRpcClientErrorException, JsonProcessingException {
-        var createOffer = xrplTransactionFactory.prepareNftOffer(rentRequestDTO);
-        var submitResult = walletService.submitTransaction(createOffer);
+        var offerResult = xrplTransactionFactory.prepareNftCreateOffer(rentRequestDTO);
+        var submitResult = walletService.submitTransaction(offerResult.getFirst());
         log.info("NfTokenCreateOffer transaction was applied: {}", submitResult.applied());
         log.info("Explorer: https://hooks-testnet-v2-explorer.xrpl-labs.com/{}", submitResult.transactionResult().hash());
 
+        //saved condition to the database
         var savedRental = rentalRepository.save(rentalMapper.mapEntity(rentRequestDTO, new RentalView()));
         // at this moment, returned IN_PROGRESS, possible scenarios of different transaction application results will be
         // handle later

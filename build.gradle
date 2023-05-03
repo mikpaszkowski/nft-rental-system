@@ -26,6 +26,7 @@ ext {
 	postgresql = "42.6.0"
 	springBootStarterVersion = "3.0.5"
 	immutablesVersion = "2.9.3"
+	spockVersion = "2.4-M1-groovy-4.0"
 }
 
 dependencies {
@@ -37,13 +38,15 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootStarterVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-validation:${springBootStarterVersion}"
 
-	compileOnly "org.immutables:value:${immutablesVersion}"
+    compileOnly "org.immutables:value:${immutablesVersion}"
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapStructBindingVersion}"
+	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "org.spockframework:spock-core:${spockVersion}"
 }
 
 tasks.named('test') {
