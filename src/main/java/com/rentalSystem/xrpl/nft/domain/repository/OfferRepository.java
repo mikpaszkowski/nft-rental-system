@@ -5,12 +5,17 @@ import com.rentalSystem.xrpl.nft.domain.model.offer.OfferView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
+@Repository
 public interface OfferRepository extends JpaRepository<OfferView, Long> {
 
     Page<OfferView> findAllByOfferType(OfferType offerType, Pageable pageable);
 
-    List<OfferView> findAllByNftView_OwnerId(String ownerId);
+    @Query(value = "SELECT * FROM OFFERS offer WHERE offer.nft_id = :nftTokenId", nativeQuery = true)
+    Optional<OfferView> findOfferViewByNftId(@Param("nftTokenId") String nftTokenId);
 }

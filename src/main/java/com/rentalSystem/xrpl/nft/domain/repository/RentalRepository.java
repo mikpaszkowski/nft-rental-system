@@ -5,11 +5,10 @@ import com.rentalSystem.xrpl.nft.domain.model.rental.RentalView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
+@Repository
 public interface RentalRepository extends JpaRepository<RentalView, Long> {
-    Page<RentalView> findAllByRentalType(RentalType rentalType, Pageable pageable);
+    Page<RentalView> findAllByRentalType(final RentalType rentalType, final Pageable pageable);
 
-    List<RentalView> findAllByRentalType(RentalType rentalType);
 }

@@ -1,19 +1,22 @@
 package com.rentalSystem.xrpl.nft.domain.model.offer;
 
 
+import com.rentalSystem.xrpl.configuration.model.DateAudit;
 import com.rentalSystem.xrpl.nft.domain.model.nft.NFTView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Entity
 @Table(name = "offers")
-public class OfferView {
+@EntityListeners(AuditingEntityListener.class)
+public class OfferView extends DateAudit {
     @Id
     private Long id;
     @NotNull

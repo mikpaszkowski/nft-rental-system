@@ -18,21 +18,35 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	mapstructVersion = "1.5.5.Final"
+	lombokVersion = "1.18.26"
+	lombokMapStructBindingVersion = "0.2.0"
+	xrpl4jVersion = "3.0.1"
+	postgresql = "42.6.0"
+	springBootStarterVersion = "3.0.5"
+	immutablesVersion = "2.9.3"
+	spockVersion = "2.4-M1-groovy-4.0"
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.xrpl:xrpl4j-core:3.0.1'
-	implementation 'org.xrpl:xrpl4j-client:3.0.1'
-	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-	implementation 'org.postgresql:postgresql:42.6.0'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.5'
-	implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.5'
+	implementation "org.xrpl:xrpl4j-core:${xrpl4jVersion}"
+	implementation "org.xrpl:xrpl4j-client:${xrpl4jVersion}"
+	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+	implementation "org.postgresql:postgresql:${postgresql}"
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootStarterVersion}"
+	implementation "org.springframework.boot:spring-boot-starter-validation:${springBootStarterVersion}"
 
-	compileOnly 'org.immutables:value:2.9.3'
+    compileOnly "org.immutables:value:${immutablesVersion}"
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapStructBindingVersion}"
+	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "org.spockframework:spock-core:${spockVersion}"
 }
 
 tasks.named('test') {

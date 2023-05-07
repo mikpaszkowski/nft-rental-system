@@ -14,7 +14,7 @@ import java.util.List;
 public class NftDetailsService {
 
     private final XrplClient xrplClient;
-
+    
     public List<NfTokenObject> findAccountNfts(Address address) throws JsonRpcClientErrorException {
         return xrplClient.accountNfts(address).accountNfts();
     }

@@ -11,8 +11,10 @@ import org.xrpl.xrpl4j.client.faucet.FundAccountRequest;
 import org.xrpl.xrpl4j.crypto.keys.KeyPair;
 import org.xrpl.xrpl4j.crypto.keys.Seed;
 
-@Component
+import java.util.concurrent.TimeUnit;
+
 @Slf4j
+@Component
 public class FakeWalletGenerator {
 
     private final FaucetClient faucetClient;
@@ -31,11 +33,12 @@ public class FakeWalletGenerator {
         var i = 0;
         while (i < NUM_OF_TEST_WALLETS) {
             wallet();
+            TimeUnit.SECONDS.sleep(10);
             i++;
         }
     }
 
-    private void wallet() throws InterruptedException {
+    private void wallet() {
         try {
             final KeyPair keyPair = Seed.secp256k1Seed().deriveKeyPair();
             log.info("Generated test wallet with classic-address: {}", keyPair.publicKey().deriveAddress());
