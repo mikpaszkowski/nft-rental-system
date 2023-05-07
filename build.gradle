@@ -2,15 +2,36 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.0.4'
 	id 'io.spring.dependency-management' version '1.1.0'
+	id "idea"
+	id 'groovy'
 }
 
 group = 'com.xrplsystem'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
+sourceSets {
+	integrationTest {
+		compileClasspath += sourceSets.main.output + test.output
+		runtimeClasspath += sourceSets.main.output + test.output
+		groovy {
+			srcDirs = ['src/integrationTest/groovy']
+		}
+	}
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
+	}
+	integrationTestImplementation.extendsFrom implementation
+	integrationTestRuntimeOnly.extendsFrom runtimeOnly
+	integrationTestImplementation.extendsFrom testImplementation
+}
+
+idea {
+	module {
+		testSources.from(sourceSets.integrationTest.groovy.srcDirs)
 	}
 }
 
@@ -38,7 +59,7 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootStarterVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-validation:${springBootStarterVersion}"
 
-    compileOnly "org.immutables:value:${immutablesVersion}"
+	compileOnly "org.immutables:value:${immutablesVersion}"
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
@@ -47,8 +68,26 @@ dependencies {
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation "org.spockframework:spock-core:${spockVersion}"
+	testImplementation "org.spockframework:spock-spring:${spockVersion}"
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.register("integrationTest", Test) {
+	description = 'Run integration tests.'
+	group = 'verification'
+
+	testClassesDirs = sourceSets.integrationTest.output.classesDirs
+	classpath = sourceSets.integrationTest.runtimeClasspath
+	shouldRunAfter test
+
+	useJUnitPlatform()
+
+	testLogging {
+		events "passed"
+	}
+}
+
+check.dependsOn integrationTest
