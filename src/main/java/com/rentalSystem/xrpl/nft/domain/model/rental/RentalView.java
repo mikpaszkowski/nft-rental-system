@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 public class RentalView extends DateAudit {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NotNull
     @NotBlank

@@ -18,12 +18,13 @@ public abstract class OfferMapper {
     private EntityManager entityManager;
 
     @Mapping(target = "nftView", expression = "java(getNFT(offerRequestDTO.getNftId()))")
-    @Mapping(target = "id", expression = "java(offerView.getId())")
-    @Mapping(target = "dailyRentalPrice", expression = "java(offerView.getDailyRentalPrice())")
-    @Mapping(target = "maxRentalDurationDays", expression = "java(offerView.getMaxRentalDurationDays())")
-    @Mapping(target = "offerType", expression = "java(offerView.getOfferType())")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dailyRentalPrice", expression = "java(offerRequestDTO.getDailyRentalPrice())")
+    @Mapping(target = "maxRentalDurationDays", expression = "java(offerRequestDTO.getMaxRentalDurationDays())")
+    @Mapping(target = "offerType", expression = "java(offerRequestDTO.getOfferType())")
     public abstract OfferView mapEntity(OfferRequestDTO offerRequestDTO, @MappingTarget OfferView offerView);
 
+    @Mapping(target = "nftId", source = "nftView.id")
     public abstract OfferResponseDTO mapDTO(OfferView offerView);
 
     protected NFTView getNFT(String nfTokenId) {

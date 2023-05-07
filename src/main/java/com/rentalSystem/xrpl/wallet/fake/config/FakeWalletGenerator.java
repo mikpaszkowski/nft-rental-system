@@ -21,7 +21,7 @@ public class FakeWalletGenerator {
 
     private final WalletRepository walletRepository;
 
-    private static final Integer NUM_OF_TEST_WALLETS = 4;
+    private static final Integer NUM_OF_TEST_WALLETS = 2;
 
     public FakeWalletGenerator(FaucetClient faucetClient, WalletRepository walletRepository) {
         this.faucetClient = faucetClient;

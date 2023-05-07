@@ -90,4 +90,6 @@ tasks.register("integrationTest", Test) {
 	}
 }
 
-check.dependsOn integrationTest
+tasks.named('check') {
+	dependsOn tasks.named('integrationTest')
+}

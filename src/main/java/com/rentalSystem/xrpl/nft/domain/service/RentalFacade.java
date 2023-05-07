@@ -6,6 +6,7 @@ import com.rentalSystem.xrpl.nft.api.model.RentRequestDTO;
 import com.rentalSystem.xrpl.nft.api.model.RentResponseDTO;
 import com.rentalSystem.xrpl.nft.domain.model.condition.ConditionView;
 import com.rentalSystem.xrpl.nft.domain.model.mapper.RentalMapper;
+import com.rentalSystem.xrpl.nft.domain.model.rental.RentalType;
 import com.rentalSystem.xrpl.nft.domain.model.rental.RentalView;
 import com.rentalSystem.xrpl.nft.domain.repository.ConditionRepository;
 import com.rentalSystem.xrpl.nft.domain.repository.RentalRepository;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
 
 @Service
@@ -41,11 +43,13 @@ public class RentalFacade {
         log.info("Explorer: https://hooks-testnet-v2-explorer.xrpl-labs.com/{}", submitResult.transactionResult().hash());
 
         var savedRental = rentalRepository.save(rentalMapper.mapEntity(rentRequestDTO, new RentalView()));
-        //saved condition to the database
-        var condition = new ConditionView();
-        condition.setRentalView(savedRental);
-        condition.setCondition(offerResult.getSecond().getFingerprintBase64Url());
-        conditionRepository.save(condition);
+        //saved condition to the database if exists
+        if(rentRequestDTO.getRentalType() == RentalType.COLLATERALIZED && StringUtils.hasText(offerResult.getSecond())) {
+            var condition = new ConditionView();
+            condition.setRentalView(savedRental);
+            condition.setCondition(offerResult.getSecond());
+            conditionRepository.save(condition);
+        }
         // at this moment, returned IN_PROGRESS, possible scenarios of different transaction application results will be
         // handle later
         return rentalMapper.mapDTO(savedRental);

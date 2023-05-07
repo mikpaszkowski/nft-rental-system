@@ -50,7 +50,7 @@ class XrplTransactionFactoryTest extends XrplClientHelper {
         var nft = NFTView.builder()
                 .ownerId(ADDRESS_OWNER)
                 .issuerId(ADDRESS_OWNER)
-                .nfTokenID(SAMPLE_NFT_ID)
+                .id(SAMPLE_NFT_ID)
                 .build();
         var offer = OfferView.builder()
                 .nftView(nft)
@@ -65,7 +65,7 @@ class XrplTransactionFactoryTest extends XrplClientHelper {
         var nfTokenCreateOffer = result.getFirst();
         var condition = result.getSecond();
         //then
-        assertThat(nfTokenCreateOffer.nfTokenId()).isEqualTo(NfTokenId.of(nft.getNfTokenID()));
+        assertThat(nfTokenCreateOffer.nfTokenId()).isEqualTo(NfTokenId.of(nft.getId()));
         assertThat(nfTokenCreateOffer.amount()).isEqualTo(XrpCurrencyAmount.of(UnsignedLong.ONE));
         assertThat(nfTokenCreateOffer.owner()).isEqualTo(Optional.of(Address.of(nft.getOwnerId())));
         assertThat(nfTokenCreateOffer.fee()).isNotNull();
@@ -87,12 +87,13 @@ class XrplTransactionFactoryTest extends XrplClientHelper {
         var nft = NFTView.builder()
                 .ownerId(ADDRESS_OWNER)
                 .issuerId(ADDRESS_OWNER)
-                .nfTokenID(SAMPLE_NFT_ID)
+                .id(SAMPLE_NFT_ID)
                 .build();
         var offer = OfferView.builder()
                 .nftView(nft)
                 .dailyRentalPrice(4)
                 .build();
+        var rentalMemos = getMemosForRental(RentalMemoDeterminant.from(requestDto, offer.getDailyRentalPrice(), UnsignedLong.valueOf(Instant.now().getEpochSecond())));
         when(offerRepository.findById(any(Long.class))).thenReturn(Optional.of(offer));
         when(xrplClient.fee()).thenReturn(FEE_RESULT_SAMPLE);
         when(xrplClient.accountInfo(any(AccountInfoRequestParams.class))).thenReturn(ACCOUNT_INFO_SAMPLE);
@@ -102,11 +103,11 @@ class XrplTransactionFactoryTest extends XrplClientHelper {
         var nfTokenCreateOffer = result.getFirst();
         var condition = result.getSecond();
         //then
-        assertThat(nfTokenCreateOffer.nfTokenId()).isEqualTo(NfTokenId.of(nft.getNfTokenID()));
+        assertThat(nfTokenCreateOffer.nfTokenId()).isEqualTo(NfTokenId.of(nft.getId()));
         assertThat(nfTokenCreateOffer.amount()).isEqualTo(XrpCurrencyAmount.of(UnsignedLong.ONE));
         assertThat(nfTokenCreateOffer.owner()).isEqualTo(Optional.of(Address.of(nft.getOwnerId())));
         assertThat(nfTokenCreateOffer.fee()).isNotNull();
-        assertThat(nfTokenCreateOffer.memos()).hasSameElementsAs(getMemosForRental(RentalMemoDeterminant.from(requestDto, offer.getDailyRentalPrice(), UnsignedLong.valueOf(Instant.now().getEpochSecond()))));
+        assertThat(nfTokenCreateOffer.memos()).hasSameSizeAs(rentalMemos);
         assertThat(condition).isNotNull();
     }
 

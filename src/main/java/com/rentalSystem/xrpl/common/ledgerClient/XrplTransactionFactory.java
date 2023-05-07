@@ -5,7 +5,6 @@ import com.google.common.primitives.UnsignedLong;
 import com.rentalSystem.xrpl.nft.api.model.RentRequestDTO;
 import com.rentalSystem.xrpl.nft.domain.model.rental.RentalType;
 import com.rentalSystem.xrpl.nft.domain.repository.OfferRepository;
-import com.ripple.cryptoconditions.PreimageSha256Condition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,7 @@ public class XrplTransactionFactory {
 
     private final static XrpCurrencyAmount RENTAL_TEMP_AMOUNT = XrpCurrencyAmount.of(UnsignedLong.ONE);
 
-    public Pair<NfTokenCreateOffer, PreimageSha256Condition> prepareNftCreateOffer(RentRequestDTO rentRequestDTO) throws JsonRpcClientErrorException {
+    public Pair<NfTokenCreateOffer, String> prepareNftCreateOffer(RentRequestDTO rentRequestDTO) throws JsonRpcClientErrorException {
         var offer = offerRepository.findById(rentRequestDTO.getOfferId()).orElseThrow();
         var accountInfo = getValidatedAccountInfo(Address.of(rentRequestDTO.getRenterId()));
         var fee = xrplClient.fee();
@@ -43,7 +42,7 @@ public class XrplTransactionFactory {
         return Pair.of(NfTokenCreateOffer.builder()
                 .account(Address.of(rentRequestDTO.getRenterId()))
                 .owner(Address.of(offer.getNftView().getOwnerId()))
-                .nfTokenId(NfTokenId.of(offer.getNftView().getNfTokenID()))
+                .nfTokenId(NfTokenId.of(offer.getNftView().getId()))
                 .sequence(accountInfo.accountData().sequence().plus(UnsignedInteger.ONE))
                 .fee(fee.drops().baseFee())
                 .amount(RENTAL_TEMP_AMOUNT)

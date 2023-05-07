@@ -2,7 +2,6 @@ package com.rentalSystem.xrpl.configuration.temp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.primitives.UnsignedLong;
-import com.rentalSystem.xrpl.wallet.fake.config.FakeWalletGenerator;
 import com.rentalSystem.xrpl.wallet.fake.domain.repository.WalletRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,6 @@ import org.xrpl.xrpl4j.model.client.accounts.AccountInfoResult;
 import org.xrpl.xrpl4j.model.client.transactions.SubmitResult;
 import org.xrpl.xrpl4j.model.transactions.NfTokenMint;
 import org.xrpl.xrpl4j.model.transactions.NfTokenUri;
-import org.xrpl.xrpl4j.model.transactions.XrpCurrencyAmount;
 
 @Slf4j
 @Component
@@ -35,18 +33,15 @@ public class TestDataGenerator {
 
     private final WalletRepository walletRepository;
 
-//    private final FakeWalletGenerator fakeWalletGenerator;
 
     public TestDataGenerator(XrplClient xrplClient, WalletRepository walletRepository) {
         this.xrplClient = xrplClient;
         this.walletRepository = walletRepository;
-//        this.fakeWalletGenerator = fakeWalletGenerator;
         this.signatureService = new BcSignatureService();
     }
 
     @PostConstruct
-    public void prepareTestAccounts() throws InterruptedException {
-//        fakeWalletGenerator.prepareTestWallets();
+    public void prepareTestAccounts() {
         var wallets = walletRepository.findAll();
         wallets.stream().forEach((walletView -> {
             var keyPair = KeyPair.builder()
@@ -63,10 +58,11 @@ public class TestDataGenerator {
 
     private void mintSampleNfToken(KeyPair keyPair, NfTokenUri uri) throws JsonRpcClientErrorException, JsonProcessingException {
         AccountInfoResult accountInfoResult = xrplClient.accountInfo(AccountInfoRequestParams.of(keyPair.publicKey().deriveAddress()));
+        var fee = xrplClient.fee();
         NfTokenMint nfTokenMint = NfTokenMint.builder()
                 .account(keyPair.publicKey().deriveAddress())
                 .tokenTaxon(UnsignedLong.ONE)
-                .fee(XrpCurrencyAmount.ofDrops(50))
+                .fee(fee.drops().baseFee())
                 .signingPublicKey(keyPair.publicKey())
                 .sequence(accountInfoResult.accountData().sequence())
                 .uri(uri)
@@ -74,6 +70,8 @@ public class TestDataGenerator {
 
         SingleSignedTransaction<NfTokenMint> signedTransaction = signatureService.sign(keyPair.privateKey(), nfTokenMint);
         SubmitResult<NfTokenMint> submitResult = xrplClient.submit(signedTransaction);
+        log.info("NfTokenMint transaction engineResult: {}", submitResult.engineResult());
         log.info("Account {} minted NFToken of taxon: {}", keyPair.publicKey().deriveAddress(), submitResult.transactionResult().transaction().uri().orElseThrow());
+        log.info("NFToken mint transaction explorer https://hooks-testnet-v2-explorer.xrpl-labs.com/{}", submitResult.transactionResult().hash());
     }
 }

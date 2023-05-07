@@ -15,5 +15,5 @@ import lombok.extern.jackson.Jacksonized;
 @Setter
 public class OfferResponseDTO extends OfferBaseDTO{
 
-    private Long id;
+    private String id;
 }

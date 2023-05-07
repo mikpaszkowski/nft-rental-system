@@ -36,7 +36,7 @@ public abstract class RentalMapper {
 
     protected NFTView getNFT(Long nftOfferId) {
         var offer = entityManager.getReference(OfferView.class, nftOfferId);
-        return entityManager.getReference(NFTView.class, offer.getNftView().getNfTokenID());
+        return entityManager.getReference(NFTView.class, offer.getNftView().getId());
     }
 
     protected UnsignedLong getTotalAmount(RentRequestDTO rentRequestDTO) {
