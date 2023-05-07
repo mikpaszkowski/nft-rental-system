@@ -7,6 +7,7 @@ import com.rentalSystem.xrpl.nft.domain.model.offer.OfferView;
 import com.rentalSystem.xrpl.nft.domain.repository.OfferRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
 import org.xrpl.xrpl4j.model.client.accounts.NfTokenObject;
 import org.xrpl.xrpl4j.model.transactions.Address;
@@ -22,6 +23,7 @@ public class OfferFacade {
 
     private final OfferMapper offerMapper;
 
+    @Transactional
     public OfferResponseDTO createOffer(OfferRequestDTO offerRequestDTO) throws JsonRpcClientErrorException {
         // check if the NFT already has its offer in the system
         offerRepository.findOfferViewByNftId(offerRequestDTO.getNftId())

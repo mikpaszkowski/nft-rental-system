@@ -15,7 +15,7 @@ import org.mapstruct.Mapping;
 
 import java.time.LocalDateTime;
 
-@Mapper(config = BaseMapperConfig.class, imports = {RentalStatus.class}, uses = LocalDateTime.class)
+@Mapper(config = BaseMapperConfig.class, imports = {RentalStatus.class, LocalDateTime.class})
 public abstract class RentalMapper {
 
     @PersistenceContext
