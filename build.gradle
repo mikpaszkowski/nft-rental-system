@@ -52,8 +52,6 @@ ext {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation "org.xrpl:xrpl4j-core:${xrpl4jVersion}"
-	implementation "org.xrpl:xrpl4j-client:${xrpl4jVersion}"
 	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
 	implementation "org.postgresql:postgresql:${postgresql}"
 	implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootStarterVersion}"

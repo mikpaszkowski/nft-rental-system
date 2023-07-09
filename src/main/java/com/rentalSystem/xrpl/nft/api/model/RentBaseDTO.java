@@ -1,6 +1,5 @@
 package com.rentalSystem.xrpl.nft.api.model;
 
-import com.google.common.primitives.UnsignedLong;
 import com.rentalSystem.xrpl.nft.domain.model.rental.RentalType;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -22,7 +21,7 @@ abstract class RentBaseDTO {
     @NotNull
     private Integer rentDays;
     @Nullable
-    private UnsignedLong collateralAmount;
+    private Integer collateralAmount;
     @NotNull
     private RentalType rentalType;
 }

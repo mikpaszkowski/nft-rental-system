@@ -10,9 +10,3 @@ spring:
 server:
   servlet:
     context-path: "/api"
-xrpl:
-  addresses:
-    clientUrl: "https://hooks-testnet-v2.xrpl-labs.com/"
-    faucetUrl: "https://hooks-testnet-v2.xrpl-labs.com"
-
-

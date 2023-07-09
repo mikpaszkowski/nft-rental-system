@@ -1,7 +1,6 @@
 package com.rentalSystem.xrpl.nft.domain.model.rental;
 
 
-import com.google.common.primitives.UnsignedLong;
 import com.rentalSystem.xrpl.configuration.model.DateAudit;
 import com.rentalSystem.xrpl.nft.domain.model.nft.NFTView;
 import jakarta.persistence.*;
@@ -38,12 +37,12 @@ public class RentalView extends DateAudit {
     private Integer rentDays;
     @NotNull
     @Positive
-    private UnsignedLong totalAmount;
+    private Integer totalAmount;
     @NotNull
     private RentalType rentalType;
     @NotNull
     private RentalStatus rentalStatus;
-    private UnsignedLong collateralAmount;
+    private Integer collateralAmount;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nft_id", foreignKey = @ForeignKey(name = "NFT_ID_FK"))
     @NotNull

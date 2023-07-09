@@ -1,5 +1,6 @@
 package com.rentalSystem.xrpl.nft.domain.model.nft;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rentalSystem.xrpl.nft.domain.model.offer.OfferView;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -27,5 +28,6 @@ public class NFTView {
     @NotNull
     private NFTStatus nftStatus;
     @OneToOne(mappedBy = "nftView")
+    @JsonBackReference
     private OfferView offerView;
 }

@@ -20,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.xrpl.xrpl4j.client.JsonRpcClientErrorException;
 
 @RestController
 @RequestMapping
@@ -45,12 +44,12 @@ class NftInfoRestController {
     }
 
     @PostMapping("/offers")
-    ResponseEntity<OfferResponseDTO> createOffer(@NotNull @Valid @RequestBody OfferRequestDTO offerRequestDTO) throws JsonRpcClientErrorException {
+    ResponseEntity<OfferResponseDTO> createOffer(@NotNull @Valid @RequestBody OfferRequestDTO offerRequestDTO) {
         return ResponseEntity.ok(offerFacade.createOffer(offerRequestDTO));
     }
 
     @PostMapping("/rentals")
-    ResponseEntity<RentResponseDTO> rentNFT(@NotNull @Valid @RequestBody RentRequestDTO rentRequestDTO) throws JsonRpcClientErrorException, JsonProcessingException {
+    ResponseEntity<RentResponseDTO> rentNFT(@NotNull @Valid @RequestBody RentRequestDTO rentRequestDTO) throws JsonProcessingException {
         return ResponseEntity.ok(rentalFacade.rentNft(rentRequestDTO));
     }
 }

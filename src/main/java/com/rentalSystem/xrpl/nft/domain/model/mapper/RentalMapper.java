@@ -1,6 +1,5 @@
 package com.rentalSystem.xrpl.nft.domain.model.mapper;
 
-import com.google.common.primitives.UnsignedLong;
 import com.rentalSystem.xrpl.configuration.model.BaseMapperConfig;
 import com.rentalSystem.xrpl.nft.api.model.RentRequestDTO;
 import com.rentalSystem.xrpl.nft.api.model.RentResponseDTO;
@@ -39,8 +38,8 @@ public abstract class RentalMapper {
         return entityManager.getReference(NFTView.class, offer.getNftView().getId());
     }
 
-    protected UnsignedLong getTotalAmount(RentRequestDTO rentRequestDTO) {
+    protected Integer getTotalAmount(RentRequestDTO rentRequestDTO) {
         var offer = entityManager.getReference(OfferView.class, rentRequestDTO.getOfferId());
-        return UnsignedLong.valueOf(rentRequestDTO.getRentDays()).times(UnsignedLong.valueOf(offer.getDailyRentalPrice()));
+        return rentRequestDTO.getRentDays() * offer.getDailyRentalPrice();
     }
 }

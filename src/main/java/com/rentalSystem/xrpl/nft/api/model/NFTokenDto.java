@@ -1,12 +1,11 @@
 package com.rentalSystem.xrpl.nft.api.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import javax.annotation.Nullable;
 
 @Data
 public class NFTokenDto {
     private String id;
-    @Nullable
+    @NotNull
     private String uri;
 }

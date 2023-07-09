@@ -16,6 +16,6 @@ public interface OfferRepository extends JpaRepository<OfferView, Long> {
 
     Page<OfferView> findAllByOfferType(OfferType offerType, Pageable pageable);
 
-    @Query(value = "SELECT * FROM offers offer WHERE offer.nft_view_id = :nftTokenId", nativeQuery = true)
+    @Query(value = "SELECT offer FROM OfferView offer WHERE offer.nftView = :nftTokenId")
     Optional<OfferView> findOne(@Param("nftTokenId") String nftTokenId);
 }
