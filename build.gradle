@@ -48,6 +48,7 @@ ext {
 	springBootStarterVersion = "3.0.5"
 	immutablesVersion = "2.9.3"
 	spockVersion = "2.4-M1-groovy-4.0"
+	webFluxVersion = "6.0.10"
 }
 
 dependencies {
@@ -56,6 +57,7 @@ dependencies {
 	implementation "org.postgresql:postgresql:${postgresql}"
 	implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootStarterVersion}"
 	implementation "org.springframework.boot:spring-boot-starter-validation:${springBootStarterVersion}"
+	implementation "org.springframework:spring-webflux:${webFluxVersion}"
 
 	compileOnly "org.immutables:value:${immutablesVersion}"
 	compileOnly 'org.projectlombok:lombok'

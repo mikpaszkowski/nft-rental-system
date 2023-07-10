@@ -13,6 +13,8 @@ import com.rentalSystem.nft.domain.repository.OfferRepository;
 import com.rentalSystem.nft.domain.repository.RentalRepository;
 import com.rentalSystem.nft.domain.service.OfferFacade;
 import com.rentalSystem.nft.domain.service.RentalFacade;
+import com.rentalSystem.xrpl.client.XrplServiceImpl;
+import com.rentalSystem.xrpl.models.URIToken;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -31,6 +35,8 @@ class NftInfoRestController {
 
     private final RentalFacade rentalFacade;
     private final OfferFacade offerFacade;
+
+    private final XrplServiceImpl xrplServiceImpl;
 
 
     @GetMapping("/rentals")
@@ -51,5 +57,10 @@ class NftInfoRestController {
     @PostMapping("/rentals")
     ResponseEntity<RentResponseDTO> rentNFT(@NotNull @Valid @RequestBody RentRequestDTO rentRequestDTO) throws JsonProcessingException {
         return ResponseEntity.ok(rentalFacade.rentNft(rentRequestDTO));
+    }
+
+    @GetMapping("/tokens/{accountNumber}")
+    List<URIToken> findURITokens(@PathVariable("accountNumber") String accountNumber) {
+        return xrplServiceImpl.getURITokens(accountNumber);
     }
 }
